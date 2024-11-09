@@ -5,12 +5,16 @@ using UnityEngine;
 
 public abstract class UnitBehaviour : MonoBehaviour
 {
+    [Header("Stats")] 
     public float attackDamage;
     public float attackRange;
+    
+    [Space]
     public float hp;
     public float attackSpeed;
     public float movementSpeed = 10;
-
+    
+    [Space]
     public bool team;
     [HideInInspector] public bool canAttack;
     private Animator anim;
@@ -25,11 +29,18 @@ public abstract class UnitBehaviour : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        anim.speed = attackSpeed;
     }
 
     private void Update()
     {
         SetBehaviour();
+        
+        //death
+        if (hp <= 0)
+        {
+            Die();
+        }
     }
 
     public virtual void FindTarget()
@@ -56,6 +67,8 @@ public abstract class UnitBehaviour : MonoBehaviour
         
         foreach (var enemy in allEnemies)
         {
+            if (enemy == null) return null;
+            
             distance = Vector3.Distance(enemy.transform.position, transform.position);
 
             if (distance < nearestDistance)
@@ -109,6 +122,11 @@ public abstract class UnitBehaviour : MonoBehaviour
             anim.SetTrigger("Attack");
         }
     }
+
+    public virtual void Die()
+    {
+        Destroy(gameObject);
+    }
     
     
 
@@ -125,16 +143,27 @@ public abstract class UnitBehaviour : MonoBehaviour
         }
     }
 
-    private void Attack()
+    public virtual void Attack()
     {
-        ;
+        if (target == null) return;
+        
+        if (Vector3.Distance(transform.position, target.transform.position) <= attackRange)
+        {
+            target.GetComponent<UnitBehaviour>().TakeDamage(attackDamage);
+        }
     }
     
-    public virtual void TakeDamage(float damage)
+    
+    public void TakeDamage(float damage)
     {
-        hp -= damage;
+        if (target !=null)
+        {
+            hp -= damage;
+        }
     }
 
+    
+    
     public ScriptableObject SynergyScriptable;
 
     public virtual void OnSpawned()

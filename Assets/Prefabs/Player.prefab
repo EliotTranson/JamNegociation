@@ -154,16 +154,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ccc10176223bc44a7f0e9dd544300c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 0
-  attackRange: 0
-  hp: 0
-  attackSpeed: 0
+  attackDamage: 5
+  attackRange: 2
+  hp: 50
+  attackSpeed: 1
   movementSpeed: 10
   team: 0
   canAttack: 0
   target: {fileID: 0}
   SynergyScriptable: {fileID: 0}
-  anim: {fileID: 2956206238116375877}
 --- !u!54 &5294835949077712616
 Rigidbody:
   m_ObjectHideFlags: 0
