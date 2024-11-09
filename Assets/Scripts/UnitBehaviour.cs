@@ -12,6 +12,8 @@ public abstract class UnitBehaviour : MonoBehaviour
     public float movementSpeed = 10;
 
     public bool team;
+    [HideInInspector] public bool canAttack;
+    private Animator anim;
 
     [Header("BehaviourNeeded")] 
     public GameObject target;
@@ -22,6 +24,7 @@ public abstract class UnitBehaviour : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -72,13 +75,17 @@ public abstract class UnitBehaviour : MonoBehaviour
             FindTarget();
             return;
         }
+
+        transform.LookAt(target.transform);
         
         if (Vector3.Distance(transform.position, target.transform.position) >= attackRange)
         {
+            canAttack = false;
             MoveToTarget();
         }
         else
         {
+            canAttack = true;
             ActionTarget();
         }
     }
@@ -86,16 +93,41 @@ public abstract class UnitBehaviour : MonoBehaviour
     public virtual void MoveToTarget()
     {
         
-        rb.AddForce((target.transform.position - transform.position).normalized * 2f, ForceMode.Acceleration);
+        rb.AddForce((target.transform.position - transform.position).normalized * 1f, ForceMode.Acceleration);
 
-        /*if (rb.velocity.magnitude > movementSpeed)
+        if (rb.velocity.magnitude > movementSpeed)
         {
             rb.velocity = rb.velocity.normalized * movementSpeed;  // Limit the velocity to x units per second
-        }*/
+        }
     }
     public virtual void ActionTarget()
     {
         rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 5 * Time.deltaTime);
+        
+        if (canAttack)
+        {
+            anim.SetTrigger("Attack");
+        }
+    }
+    
+    
+
+    private void ChangeAttackState(int state)
+    {
+        if (state == 0)
+        {
+            canAttack = false;
+        }
+
+        if (state == 1)
+        {
+            canAttack = true;
+        }
+    }
+
+    private void Attack()
+    {
+        ;
     }
     
     public virtual void TakeDamage(float damage)
