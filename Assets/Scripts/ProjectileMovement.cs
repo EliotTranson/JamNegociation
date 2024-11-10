@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ProjectileMovement : MonoBehaviour
 {
-    public Transform target;
+    public GameObject target;
     [SerializeField] private float projectileSpeed = 10;
 
     [HideInInspector] public float damage;
@@ -15,9 +15,9 @@ public class ProjectileMovement : MonoBehaviour
     {
         if (target == null) return;
         
-        transform.position = Vector3.MoveTowards(transform.position, target.position, projectileSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, projectileSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, target.position) < 0.5f)
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
         {
             target.GetComponent<UnitBehaviour>().TakeDamage(damage);
             
